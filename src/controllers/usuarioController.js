@@ -56,35 +56,3 @@ export const criarUsuario = async (req, res) => {
     }
 }
 
-export const editarUsuario = async (req, res) => {
-    let conn;
-
-    console.log(req.body);
-    try {
-        const { nome, email, perfil } = req.body;
-
-        if (!nome || !email) {
-            return res.status(400).json({ messagem: "Nome e email são obrigatórios" })
-        }
-
-        conn = await conexao.getConnection();
-
-        const [rows] = await conn.query("SELECT * FROM usuarios WHERE email = ?", [email]);
-
-        if (rows.length > 0) {
-            return res.status(400).json({ messagem: "Email ja cadastrado" })
-        }
-
-        await conn.query(`UPDATE usuarios (nome, email, perfil) 
-                        VALUES (?, ?, ?)`, [nome, email, perfil || "admin"])
-
-        res.status(201).json({ mensagem: "Usuário editado com sucesso" });
-    } catch (error) {
-        res.status(500).json({
-            mensagem: "Erro ao editar",
-            erro: error.message
-        });
-    } finally {
-        if (conn) conn.release();
-    }
-}
