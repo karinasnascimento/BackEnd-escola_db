@@ -13,25 +13,27 @@ describe('Testes da API de Notas', () => {
         const resLogin = await request(app).post('/auth/login').send({ email: emailAdmin, senha: "123" });
         token = resLogin.body.token;
 
-        // 2. Criar Aluno (Verifique se a rota é /alunos ou /aluno no seu app.js)
+        // 2. Criar Aluno com CPF único
         const resAluno = await request(app)
-            .post('/alunos') 
+            .post('/alunos')
             .set('Authorization', `Bearer ${token}`)
-            .send({ nome: "Aluno Teste Nota", matricula: `MAT${Date.now()}` });
-        
-        // Se o status não for 201, o ID será undefined
-        if(resAluno.statusCode !== 201) {
+            .send({
+                nome: "Aluno Teste Nota",
+                cpf: `${Date.now()}`.slice(-11).padStart(11, '0')
+            });
+
+        if (resAluno.statusCode !== 201) {
             console.log("ERRO AO CRIAR ALUNO NO TESTE:", resAluno.body);
         }
         alunoId = resAluno.body.id;
 
-        // 3. Criar Disciplina (Verifique se a rota é /disciplinas ou /disciplina)
+        // 3. Criar Disciplina
         const resDisc = await request(app)
             .post('/disciplinas')
             .set('Authorization', `Bearer ${token}`)
             .send({ nome: "Disciplina Teste Nota", carga_horaria: 40 });
-            
-        if(resDisc.statusCode !== 201) {
+
+        if (resDisc.statusCode !== 201) {
             console.log("ERRO AO CRIAR DISCIPLINA NO TESTE:", resDisc.body);
         }
         disciplinaId = resDisc.body.id;
