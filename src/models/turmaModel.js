@@ -3,7 +3,7 @@ import conexao from "../config/db.js";
 export async function listarTurmas() {
     try {
         const [resultado] = await conexao.query(`
-            SELECT t.id, t.nome, t.ano_letivo, p.nome AS professor_nome 
+            SELECT t.id, t.nome, t.ano_letivo, t.professor_id, p.nome AS professor
             FROM turmas t
             LEFT JOIN professores p ON t.professor_id = p.id
             ORDER BY t.id DESC

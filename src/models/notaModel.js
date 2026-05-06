@@ -3,7 +3,7 @@ import conexao from "../config/db.js";
 export async function listarNotas() {
     try {
         const [resultado] = await conexao.query(`
-            SELECT n.*, a.nome AS aluno_nome, d.nome AS disciplina_nome 
+            SELECT n.*, a.nome AS aluno, d.nome AS disciplina
             FROM notas n
             INNER JOIN alunos a ON n.aluno_id = a.id
             INNER JOIN disciplinas d ON n.disciplina_id = d.id
@@ -62,7 +62,6 @@ export async function calcularMedia() {
             INNER JOIN disciplinas d ON n.disciplina_id = d.id
             GROUP BY a.id, d.id
         `);
-
         return resultado;
     } catch (error) {
         throw new Error("Erro ao calcular média: " + error.message);
